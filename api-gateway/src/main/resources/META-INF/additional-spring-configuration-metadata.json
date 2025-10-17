@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "spring.webflux.cors.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.webflux.cors.enabled'"
+  },
+  {
+    "name": "spring.cloud.gateway.default-filters",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.default-filters'"
+  },
+  {
+    "name": "spring.cloud.gateway.routes",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.gateway.routes'"
+  },
+  {
+    "name": "spring.application.cloud.routes",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.application.cloud.routes'"
+  },
+  {
+    "name": "management.endpoints.web.exposure.include",
+    "type": "java.lang.String",
+    "description": "A description for 'management.endpoints.web.exposure.include'"
+  }
+]}

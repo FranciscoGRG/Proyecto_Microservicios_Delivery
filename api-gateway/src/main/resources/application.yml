@@ -1,0 +1,58 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server: # <-- AÑADIDO ESTE NIVEL
+        webflux: # <-- AÑADIDO ESTE NIVEL
+          routes: # <-- ROUTES AHORA VA AQUÍ
+            # --- Ruta 1: User Service ---
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/users/**
+
+            # --- Ruta 2: Catalog Service ---
+            - id: catalog-service
+              uri: lb://catalog-service
+              predicates:
+                - Path=/api/v1/catalogs/**
+
+            # --- Ruta 3: Order Service ---
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/api/v1/orders/**
+
+            # --- Ruta 4: Payment Service ---
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/api/v1/payments/**
+
+            # --- Ruta 5: Eureka Server UI ---
+            # NOTA: Cambié localhost a eureka-server para compatibilidad con docker-compose.
+            # Si lo corres fuera de Docker, 'localhost' es correcto.
+            - id: eureka-server-ui
+              uri: http://localhost:8000 
+              predicates:
+                - Path=/eureka/**
+
+eureka:
+  client:
+    service-url:
+      # NOTA: Cambié localhost a eureka-server para compatibilidad con docker-compose.
+      defaultZone: http://localhost:8000/eureka/
+  instance:
+    prefer-ip-address: false
+    hostname: api-gateway
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info

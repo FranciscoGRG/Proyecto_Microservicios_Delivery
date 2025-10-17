@@ -1,0 +1,27 @@
+server:
+  port: 8083 
+
+spring:
+  application:
+    name: users-service 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_db
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/
+
+jwt:
+  secret: bXlfc3VwZXJfc2VjcmV0X2tleV9mb3Jfanp3dF9pbl9iYXNlNjQ= 
+  expiration: 3600000 
