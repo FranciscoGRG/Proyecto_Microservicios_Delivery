@@ -19,7 +19,7 @@ public class User {
     private String name;
     private String phone;
     private String password;
-    private String rol;
+    private String rol = "USER";
 
     public User() {
     }

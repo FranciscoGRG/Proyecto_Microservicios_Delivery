@@ -12,7 +12,7 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: user_service_db
+      POSTGRES_DB: user_db
     volumes:
       - user_data:/var/lib/postgresql/data
     ports:

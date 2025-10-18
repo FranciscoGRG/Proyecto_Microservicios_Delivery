@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.eplataforma_deliveri.user_service.dtos.AuthResponseDto;
 import com.eplataforma_deliveri.user_service.dtos.RegisterDto;
-import com.eplataforma_deliveri.user_service.dtos.UserDto;
 import com.eplataforma_deliveri.user_service.models.User;
 import com.eplataforma_deliveri.user_service.repositories.IUserRepository;
 
