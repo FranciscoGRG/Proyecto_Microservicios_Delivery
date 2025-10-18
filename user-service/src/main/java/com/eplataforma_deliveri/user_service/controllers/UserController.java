@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.eplataforma_deliveri.user_service.dtos.LoginRequestDto;
 import com.eplataforma_deliveri.user_service.dtos.RegisterDto;
 import com.eplataforma_deliveri.user_service.models.User;
 import com.eplataforma_deliveri.user_service.services.UserService;
@@ -32,6 +34,12 @@ public class UserController {
     public ResponseEntity<User> register(@RequestBody RegisterDto request) {
         return ResponseEntity.ok(service.register(request));
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody LoginRequestDto request) {      
+        return ResponseEntity.ok(service.login(request));
+    }
+    
     
 
 }

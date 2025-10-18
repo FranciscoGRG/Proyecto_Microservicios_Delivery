@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.eplataforma_deliveri.user_service.dtos.LoginRequestDto;
 import com.eplataforma_deliveri.user_service.dtos.RegisterDto;
+import com.eplataforma_deliveri.user_service.exceptions.InvalidCredentialsException;
 import com.eplataforma_deliveri.user_service.models.User;
 import com.eplataforma_deliveri.user_service.repositories.IUserRepository;
 
@@ -38,5 +40,15 @@ public class UserService {
         User userSaved = repository.save(user);
 
         return userSaved;
+    }
+
+    public User login (LoginRequestDto request) {
+        User user = repository.findByEmail(request.email()).orElseThrow(() -> new InvalidCredentialsException("Usuario no encontrado"));
+        
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new InvalidCredentialsException("Usuario o contraseña incorrectos");
+        }
+
+        return user;
     }
 }
