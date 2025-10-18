@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eplataforma_deliveri.user_service.dtos.AuthResponseDto;
 import com.eplataforma_deliveri.user_service.dtos.LoginRequestDto;
 import com.eplataforma_deliveri.user_service.dtos.RegisterDto;
 import com.eplataforma_deliveri.user_service.models.User;
@@ -31,12 +32,12 @@ public class UserController {
     
     //Cambiar a tipo AuthResponse cuando implemente los tokens
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterDto request) {
+    public ResponseEntity<AuthResponseDto> register(@RequestBody RegisterDto request) {
         return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequestDto request) {      
+    public ResponseEntity<AuthResponseDto> login(@RequestBody LoginRequestDto request) {      
         return ResponseEntity.ok(service.login(request));
     }
     

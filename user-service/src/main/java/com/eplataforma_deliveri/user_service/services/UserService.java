@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.eplataforma_deliveri.user_service.dtos.AuthResponseDto;
 import com.eplataforma_deliveri.user_service.dtos.LoginRequestDto;
 import com.eplataforma_deliveri.user_service.dtos.RegisterDto;
 import com.eplataforma_deliveri.user_service.exceptions.InvalidCredentialsException;
@@ -21,12 +22,15 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtService jwtService;
+
     public List<User> findAll() {
         return repository.findAll();
     }
 
-    //Cambiar a AuthResponse cuando implemente los tokens
-    public User register (RegisterDto request) {
+    // Cambiar a AuthResponse cuando implemente los tokens
+    public AuthResponseDto register(RegisterDto request) {
         if (repository.existsByEmail(request.email())) {
             throw new RuntimeException("El email ya esta en uso");
         }
@@ -39,16 +43,19 @@ public class UserService {
 
         User userSaved = repository.save(user);
 
-        return userSaved;
+        String token = jwtService.generateToken(userSaved.getEmail(), userSaved.getRol());
+        return new AuthResponseDto(token, userSaved.getEmail(), userSaved.getRol());
     }
 
-    public User login (LoginRequestDto request) {
-        User user = repository.findByEmail(request.email()).orElseThrow(() -> new InvalidCredentialsException("Usuario no encontrado"));
-        
+    public AuthResponseDto login(LoginRequestDto request) {
+        User user = repository.findByEmail(request.email())
+                .orElseThrow(() -> new InvalidCredentialsException("Usuario no encontrado"));
+
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new InvalidCredentialsException("Usuario o contraseña incorrectos");
         }
 
-        return user;
+        String token = jwtService.generateToken(user.getEmail(), user.getRol());
+        return new AuthResponseDto(token, user.getEmail(), user.getRol());
     }
 }
