@@ -1,0 +1,24 @@
+server:
+  port: 8084 # Puerto dedicado para el Catalog Service
+
+spring:
+  application:
+    name: catalog-service # <-- Corregido para reflejar el servicio de catálogo
+  
+  # --- Configuración de MongoDB (Reemplaza a DataSource/JPA) ---
+  data:
+    mongodb:
+      # CRÍTICO: El URI de conexión a tu servidor MongoDB. 
+      # Si usas Docker Compose, reemplaza 'localhost' por el nombre de tu servicio Mongo (ej. 'mongo')
+      uri: mongodb://localhost:27017/catalogdb # Nombre de la base de datos: catalogdb
+
+# --- Configuración de Eureka ---
+eureka:
+  instance:
+    # Es mejor usar el nombre del host o servicio de Docker si estás en un contenedor.
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      # URL de tu Eureka Server
+      defaultZone: http://localhost:8000/eureka/

@@ -10,14 +10,11 @@ import com.eplataforma_deliveri.user_service.repositories.IUserRepository;
 
 @Service
 public class JpaUserDetailsService implements UserDetailsService {
-
-    @Autowired
+        @Autowired
     private IUserRepository repository;
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return repository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
+                         .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
-
 }

@@ -23,5 +23,5 @@ eureka:
       defaultZone: http://localhost:8000/eureka/
 
 jwt:
-  secret: bXlfc3VwZXJfc2VjcmV0X2tleV9mb3Jfanp3dF9pbl9iYXNlNjQ= 
+  secret: bXlfc3VwZXJfc2VjcmV0X2tleV9mb3Jfanp3dF9pbl9iYXNlNjQ=
   expiration: 3600000 

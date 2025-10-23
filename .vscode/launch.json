@@ -19,7 +19,8 @@
             "mainClass": "com.plataforma_deliveri.api_gateway.ApiGatewayApplication",
             "projectName": "api-gateway",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=60061 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=api-gateway"
         },
         {
             "type": "java",
@@ -28,6 +29,28 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.eplataforma_deliveri.user_service.UserServiceApplication",
             "projectName": "user-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55791 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=user-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CatalogServiceApplication<catalog-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.plataforma_deliveri.catalog_service.CatalogServiceApplication",
+            "projectName": "catalog-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=60025 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=catalog-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-PaymentServiceApplication<payment-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.plataforma_deliveri.payment_service.PaymentServiceApplication",
+            "projectName": "payment-service",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

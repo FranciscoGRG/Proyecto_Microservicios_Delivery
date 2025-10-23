@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8080 # <-- El puerto debe ir bajo la clave 'server'
 
 spring:
   application:
@@ -7,45 +7,44 @@ spring:
 
   cloud:
     gateway:
-      server: # <-- AÑADIDO ESTE NIVEL
-        webflux: # <-- AÑADIDO ESTE NIVEL
-          routes: # <-- ROUTES AHORA VA AQUÍ
-            # --- Ruta 1: User Service ---
-            - id: user-service
-              uri: lb://user-service
-              predicates:
-                - Path=/api/v1/users/**
+      default-filters:
+      - AuthenticationFilter
+      routes: # <-- Las rutas van directamente aquí
+        # --- Ruta 1: User Service ---
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/users/**
 
-            # --- Ruta 2: Catalog Service ---
-            - id: catalog-service
-              uri: lb://catalog-service
-              predicates:
-                - Path=/api/v1/catalogs/**
+        # --- Ruta 2: Catalog Service ---
+        - id: catalog-service
+          uri: lb://catalog-service
+          predicates:
+            - Path=/api/v1/products/**
 
-            # --- Ruta 3: Order Service ---
-            - id: order-service
-              uri: lb://order-service
-              predicates:
-                - Path=/api/v1/orders/**
+        # --- Ruta 3: Order Service ---
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/v1/orders/**
 
-            # --- Ruta 4: Payment Service ---
-            - id: payment-service
-              uri: lb://payment-service
-              predicates:
-                - Path=/api/v1/payments/**
+        # --- Ruta 4: Payment Service ---
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payments/**
 
-            # --- Ruta 5: Eureka Server UI ---
-            # NOTA: Cambié localhost a eureka-server para compatibilidad con docker-compose.
-            # Si lo corres fuera de Docker, 'localhost' es correcto.
-            - id: eureka-server-ui
-              uri: http://localhost:8000 
-              predicates:
-                - Path=/eureka/**
+        # --- Ruta 5: Eureka Server UI ---
+        # Nota: Aquí no se usa 'lb://' porque es un servicio externo no registrado en Eureka.
+        - id: eureka-server-ui
+          uri: http://localhost:8000
+          predicates:
+            - Path=/eureka/**
 
+# --- Configuración de Eureka ---
 eureka:
   client:
     service-url:
-      # NOTA: Cambié localhost a eureka-server para compatibilidad con docker-compose.
       defaultZone: http://localhost:8000/eureka/
   instance:
     prefer-ip-address: false
@@ -56,3 +55,10 @@ management:
     web:
       exposure:
         include: health, info
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.security.oauth2.jwt: TRACE

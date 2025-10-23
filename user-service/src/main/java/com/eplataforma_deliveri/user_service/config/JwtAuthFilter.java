@@ -1,7 +1,4 @@
 package com.eplataforma_deliveri.user_service.config;
-
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.eplataforma_deliveri.user_service.services.JwtService;
 
+import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,13 +22,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
+
         String path = request.getRequestURI();
 
         if (request.getMethod().equals(HttpMethod.OPTIONS.name()) ||
@@ -64,5 +63,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
 }
