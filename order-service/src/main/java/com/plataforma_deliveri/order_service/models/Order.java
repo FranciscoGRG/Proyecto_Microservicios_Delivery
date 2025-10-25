@@ -1,6 +1,5 @@
 package com.plataforma_deliveri.order_service.models;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

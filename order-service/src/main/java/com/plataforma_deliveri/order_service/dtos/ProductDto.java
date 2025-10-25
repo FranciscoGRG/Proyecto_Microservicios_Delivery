@@ -1,4 +1,4 @@
-package dtos;
+package com.plataforma_deliveri.order_service.dtos;
 
 public record ProductDto(
     String id,

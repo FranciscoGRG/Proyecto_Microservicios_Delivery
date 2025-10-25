@@ -1,10 +1,10 @@
-package clients;
+package com.plataforma_deliveri.order_service.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import dtos.ProductDto;
+import com.plataforma_deliveri.order_service.dtos.ProductDto;
 
 @FeignClient(name = "catalog-service")
 public interface ICatalogServiceFeignClient {

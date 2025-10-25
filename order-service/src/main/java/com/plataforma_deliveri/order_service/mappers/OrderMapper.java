@@ -1,15 +1,14 @@
-package mappers;
+package com.plataforma_deliveri.order_service.mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.plataforma_deliveri.order_service.dtos.OrderItemResponseDto;
+import com.plataforma_deliveri.order_service.dtos.OrderResponseDto;
 import com.plataforma_deliveri.order_service.models.Order;
 import com.plataforma_deliveri.order_service.models.OrderItem;
-
-import dtos.OrderItemResponseDto;
-import dtos.OrderResponseDto;
 
 @Component
 public class OrderMapper {

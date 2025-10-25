@@ -1,4 +1,4 @@
-package dtos;
+package com.plataforma_deliveri.order_service.dtos;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,0 +1,26 @@
+server:
+  port: 8085
+
+spring:
+  cloud:
+    compatibility-verifier:
+      enabled: false
+  application:
+    name: order-service 
+  datasource:
+    url: jdbc:postgresql://localhost:5433/delivery_platform_db
+    username: order_user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/
