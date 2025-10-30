@@ -21,7 +21,6 @@
         <spring-cloud.version>2023.0.0</spring-cloud.version>
     </properties>
 
-    <!-- Añadir los modulos faltantes como payment y notification -->
     <modules>
         <module>eureka-server</module>
         <module>api-gateway</module>

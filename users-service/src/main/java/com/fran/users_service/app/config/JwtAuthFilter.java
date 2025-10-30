@@ -33,17 +33,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
+
+        // CORRECCIÓN DEFINITIVA: Si es OPTIONS, Login/Register, o un GET a /travels, saltamos la validación.
         if (request.getMethod().equals(HttpMethod.OPTIONS.name()) ||
                 path.endsWith("/api/v1/users/login") ||
                 path.endsWith("/api/v1/users/register")) {
 
+            // Permitimos que la cadena continúe, permitiendo que SecurityConfig aplique el 'permitAll()'.
             filterChain.doFilter(request, response);
             return;
         }
 
         final String authHeader = request.getHeader("Authorization");
 
+        // Esta lógica maneja todas las peticiones restantes (POST, PUT, DELETE, y rutas autenticadas)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            // Si falta el token en una ruta que requiere autenticación,
+            // permitimos que la cadena continúe para que Spring Security la bloquee con un 401/403.
             filterChain.doFilter(request, response);
             return;
         }

@@ -1,5 +1,4 @@
 package com.fran.users_service.app.services;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,16 +18,18 @@ import java.util.function.Function;
 public class JwtService {
 
     @Value("${jwt.secret}")
-    private String secretKey;
+    private String secretKey; // debe estar en base64
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration}") // en milisegundos
     private long jwtExpiration;
 
+    // 🔑 Convierte el secret en una Key segura
     private Key getSigningKey() {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    // Crear token con claims personalizados (ej: rol)
     public String generateToken(String email, String rol) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("rol", rol);
@@ -45,10 +46,11 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String userEmail = extractEmail(token);
-        return (userEmail.equals(userDetails.getUsername())) && !isTokenExpired(token);
-    }
+    // Validar token contra usuario
+public boolean validateToken(String token, UserDetails userDetails) {
+    final String userEmail = extractEmail(token);
+    return (userEmail.equals(userDetails.getUsername())) && !isTokenExpired(token);
+}
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -79,12 +81,12 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token){
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
