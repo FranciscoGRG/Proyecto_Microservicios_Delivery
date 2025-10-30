@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.plataforma_deliveri.catalog_service.dtos.ProductRequestDto;
 import com.plataforma_deliveri.catalog_service.dtos.ProductResponseDto;
+import com.plataforma_deliveri.catalog_service.errors.ProductNotFoundException;
 import com.plataforma_deliveri.catalog_service.models.Product;
 import com.plataforma_deliveri.catalog_service.repositories.IProductRepository;
 
@@ -39,7 +40,7 @@ public class ProductService {
     }
 
     public ProductResponseDto updateProduct(String id, ProductRequestDto request) {
-        Product existingProduct = repository.findById(id).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        Product existingProduct = repository.findById(id).orElseThrow(() -> new ProductNotFoundException("Producto con id: " + id + " no encontrado"));
 
         existingProduct.setName(request.name());
         existingProduct.setDescripction(request.description());

@@ -1,15 +1,12 @@
 server:
-  port: 8085
+  port: 8083 
 
 spring:
-  cloud:
-    compatibility-verifier:
-      enabled: false
   application:
-    name: order-service 
+    name: users-service 
   datasource:
-    url: jdbc:postgresql://localhost:5433/delivery_platform_db
-    username: order_user
+    url: jdbc:postgresql://localhost:5432/user_db
+    username: user
     password: password
     driver-class-name: org.postgresql.Driver
   jpa:
@@ -23,4 +20,8 @@ eureka:
     hostname: localhost
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/ 
+
+jwt:
+  secret: bXlfc3VwZXJfc2VjcmV0X2tleV9mb3Jfanp3dF9pbl9iYXNlNjQ= 
+  expiration: 3600000 

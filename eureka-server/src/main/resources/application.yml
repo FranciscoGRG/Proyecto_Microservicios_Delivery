@@ -1,16 +1,6 @@
 server:
-  port: 8000 # <-- El puerto debe ir bajo la clave 'server'
-
+  port: 8761
 eureka:
   client:
-    # Desactivamos el modo cliente: un servidor Eureka no debe registrarse a sí mismo
     register-with-eureka: false 
     fetch-registry: false 
-    service-url:
-      # CRÍTICO: Definir la URL que el propio Eureka debe usar (que es él mismo)
-      # Esto anula la configuración por defecto (localhost:8761) y resuelve el error.
-      defaultZone: http://localhost:8000/eureka/ 
-  
-  instance:
-    # Opcional, pero bueno para identificarlo
-    hostname: eureka-server-standalone

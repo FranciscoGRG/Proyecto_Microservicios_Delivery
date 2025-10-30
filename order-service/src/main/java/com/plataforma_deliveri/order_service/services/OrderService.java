@@ -11,7 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.plataforma_deliveri.order_service.clients.ICatalogServiceFeignClient;
 import com.plataforma_deliveri.order_service.dtos.OrderItemRequestDto;
-import com.plataforma_deliveri.order_service.dtos.OrderItemResponseDto;
 import com.plataforma_deliveri.order_service.dtos.OrderRequestDto;
 import com.plataforma_deliveri.order_service.dtos.OrderResponseDto;
 import com.plataforma_deliveri.order_service.dtos.ProductDto;
@@ -34,8 +33,8 @@ public class OrderService {
 
     public List<OrderResponseDto> findAll() {
         return repository.findAll().stream()
-            .map(orderMapper::toOrderResponseDTO)
-            .collect(Collectors.toList());
+                .map(orderMapper::toOrderResponseDTO)
+                .collect(Collectors.toList());
     }
 
     public OrderResponseDto createOrder(OrderRequestDto request, String userEmail) {
@@ -50,8 +49,23 @@ public class OrderService {
 
             try {
                 productInfo = catalogClient.getProductById(itemDto.id());
+            } catch (RuntimeException e) { // 💡 Captura la RuntimeException del Decoder
+
+                if ("PRODUCT_NOT_FOUND_IN_CATALOG".equals(e.getMessage())) {
+                    // 🛑 Si el mensaje coincide, lanza tu mensaje personalizado con el ID
+                    throw new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Producto con id: " + itemDto.id() + " no se ha encontrado");
+                }
+
+                // Si es otra RuntimeException, relánzala
+                throw e;
+
             } catch (Exception e) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product id: " + itemDto.id() + " no se ha encontrado");
+                // Puedes dejar este catch para otros errores de Feign que no sean 404 (ej.
+                // problemas de conexión)
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Error al comunicarse con el servicio de catálogo.");
             }
 
             if (productInfo.price() == null || productInfo.price() <= 0 || itemDto.quantity() <= 0) {
@@ -73,9 +87,8 @@ public class OrderService {
         newOrder.setTotalPrice(total);
 
         Order savedOrder = repository.save(newOrder);
-        
+
         return orderMapper.toOrderResponseDTO(savedOrder);
     }
 
-    
 }

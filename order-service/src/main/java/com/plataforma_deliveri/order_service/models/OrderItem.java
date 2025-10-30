@@ -28,7 +28,7 @@ public class OrderItem {
     private Double priceAtOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false) // Columna FK en la tabla order_items
+    @JoinColumn(name = "order_id", nullable = false) 
     private Order order;
 
     public OrderItem() {

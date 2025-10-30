@@ -5,52 +5,18 @@
             "name": "Spring Boot-EurekaServerApplication<eureka-server>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "mainClass": "com.plataforma_deliveri.eureka_server.EurekaServerApplication",
+            "mainClass": "com.fran.eurekaserver.app.EurekaServerApplication",
             "projectName": "eureka-server",
             "args": "",
-            "envFile": "${workspaceFolder}/.env",
-            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=61149 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=eureka-server"
+            "envFile": "${workspaceFolder}/.env"
         },
         {
             "type": "java",
-            "name": "Spring Boot-ApiGatewayApplication<api-gateway>",
+            "name": "Spring Boot-UsersServiceApplication<users-service>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "mainClass": "com.plataforma_deliveri.api_gateway.ApiGatewayApplication",
-            "projectName": "api-gateway",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env",
-            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=60061 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=api-gateway"
-        },
-        {
-            "type": "java",
-            "name": "Spring Boot-UserServiceApplication<user-service>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "mainClass": "com.eplataforma_deliveri.user_service.UserServiceApplication",
-            "projectName": "user-service",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env",
-            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55791 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=user-service"
-        },
-        {
-            "type": "java",
-            "name": "Spring Boot-CatalogServiceApplication<catalog-service>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "mainClass": "com.plataforma_deliveri.catalog_service.CatalogServiceApplication",
-            "projectName": "catalog-service",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env",
-            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=60025 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=catalog-service"
-        },
-        {
-            "type": "java",
-            "name": "Spring Boot-PaymentServiceApplication<payment-service>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "mainClass": "com.plataforma_deliveri.payment_service.PaymentServiceApplication",
-            "projectName": "payment-service",
+            "mainClass": "com.fran.users_service.app.UsersServiceApplication",
+            "projectName": "users-service",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         },
@@ -61,6 +27,26 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.plataforma_deliveri.order_service.OrderServiceApplication",
             "projectName": "order-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CatalogServiceApplication<catalog-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.plataforma_deliveri.catalog_service.CatalogServiceApplication",
+            "projectName": "catalog-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiGatewayApplication<api-gateway>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.fran.apigateway.app.ApiGatewayApplication",
+            "projectName": "api-gateway",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
