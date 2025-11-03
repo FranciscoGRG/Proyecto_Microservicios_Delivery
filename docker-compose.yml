@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # ----------------------------------------------------------------------
-  # 1. Bases de Datos 
+  # 1. Bases de Datos
   # ----------------------------------------------------------------------
 
   # Base de Datos para User Service (PostgreSQL)
@@ -30,7 +30,7 @@ services:
     ports:
       - "27017:27017" # Conexión local: localhost:27017
 
-  # Base de Datos para Order y Payment Service (PostgreSQL Transaccional)
+  # Base de Datos para Order (PostgreSQL Transaccional)
   transactional_db:
     image: postgres:15-alpine
     container_name: transactional_db
@@ -42,6 +42,19 @@ services:
       - order_data:/var/lib/postgresql/data
     ports:
       - "5433:5432" # Usamos 5433 localmente
+
+  # Base de Datos para Payment Service
+  payment_db:
+    image: postgres:15-alpine
+    container_name: payment_db
+    environment:
+      POSTGRES_USER: payment_user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: payment_db
+    volumes:
+      - payment_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432" # Conexión local: localhost:5432
 
   # ----------------------------------------------------------------------
   # 2. Mensajería Asíncrona (Kafka + Zookeeper)
@@ -86,3 +99,4 @@ volumes:
   user_data:
   catalog_data:
   order_data:
+  payment_data:
