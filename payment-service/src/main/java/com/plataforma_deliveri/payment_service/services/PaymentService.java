@@ -7,14 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.plataforma_deliveri.payment_service.controllers.PaymentWebhookController;
 import com.plataforma_deliveri.payment_service.dtos.PaymentRequestDto;
 import com.plataforma_deliveri.payment_service.dtos.PaymentResponseDto;
 import com.plataforma_deliveri.payment_service.entities.PaymentTransaction;
 import com.plataforma_deliveri.payment_service.repositories.IPaymentTransactionRepository;
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
@@ -25,6 +26,12 @@ public class PaymentService {
 
     @Autowired
     private IPaymentTransactionRepository repository;
+
+    
+
+    public PaymentService(@Value("${stripe.api.secretKey}") String stripeSecretKey) {
+        Stripe.apiKey = stripeSecretKey;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 

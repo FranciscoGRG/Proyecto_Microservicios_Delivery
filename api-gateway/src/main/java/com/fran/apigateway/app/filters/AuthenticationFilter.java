@@ -21,7 +21,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private static final List<String> OPEN_API_ENDPOINTS = List.of(
             "/api/v1/users/register",
             "/api/v1/users/login",
-            "/api/v1/travels" // incluye subrutas gracias a startsWith
+            "/api/v1/payments/**",
+            "/actuator/**",
+            "/eureka/**" 
     );
 
     private final WebClient.Builder webClientBuilder;

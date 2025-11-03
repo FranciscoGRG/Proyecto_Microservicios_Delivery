@@ -36,6 +36,7 @@ public class PaymentTransaction {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(columnDefinition = "TEXT")
     private String errorMessage;
 
     @PrePersist

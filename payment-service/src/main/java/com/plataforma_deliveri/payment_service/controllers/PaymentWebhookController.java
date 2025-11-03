@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @RestController
-@RequestMapping("/api/v1/payments")
+@RequestMapping("/api/v1/payments/webhooks")
 public class PaymentWebhookController {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentWebhookController.class);
@@ -31,7 +31,7 @@ public class PaymentWebhookController {
     @Value("${stripe.webhook.secret}")
     private String webhookSecret;
 
-    @PostMapping("/webhook")
+    @PostMapping("/events")
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
         Event event = null;
 

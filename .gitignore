@@ -1,2 +1,3 @@
 ./payment-service
 payment-service/src/main/resources/application.yml
+payment-service/src/main/resources/application.yml
