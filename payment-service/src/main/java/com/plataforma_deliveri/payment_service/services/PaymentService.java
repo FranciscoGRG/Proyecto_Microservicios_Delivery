@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.plataforma_deliveri.payment_service.config.KafkaTopigConfig;
 import com.plataforma_deliveri.payment_service.dtos.PaymentRequestDto;
 import com.plataforma_deliveri.payment_service.dtos.PaymentResponseDto;
 import com.plataforma_deliveri.payment_service.entities.PaymentTransaction;
@@ -27,6 +29,8 @@ public class PaymentService {
     @Autowired
     private IPaymentTransactionRepository repository;
 
+    @Autowired
+    private KafkaTemplate<Long, String> kafkaTemplate;
     
 
     public PaymentService(@Value("${stripe.api.secretKey}") String stripeSecretKey) {
@@ -84,29 +88,41 @@ public class PaymentService {
         }
     }
 
-    @Transactional
+@Transactional
     public void handleWebhookEvent(String eventType, StripeObject dataObject) {
+
         if ("payment_intent.succeeded".equals(eventType)) {
             PaymentIntent intent = (PaymentIntent) dataObject;
             String stripeId = intent.getId();
 
             repository.findByStripePaymentId(stripeId).ifPresent(transaction -> {
                 transaction.setStatus("SUCCEEDED");
-                repository.save(transaction);
+                repository.save(transaction); // Actualiza DB
 
-                logger.info("Pago existoso registrado. Enviando notificacion al Order-service con el id: " + transaction.getId());
+                Long orderId = transaction.getOrderId();
+                String status = "SUCCEEDED";
+                kafkaTemplate.send(KafkaTopigConfig.PAYMENT_EVENTS_TOPIC, orderId, status); 
+
+                logger.info("Pago exitoso registrado. Enviando notificación al Order-service con Order ID: {}", orderId);
             });
         } else if ("payment_intent.payment_failed".equals(eventType)) {
             PaymentIntent intent = (PaymentIntent) dataObject;
             String stripeId = intent.getId();
-
+            
             repository.findByStripePaymentId(stripeId).ifPresent(transaction -> {
                 transaction.setStatus("FAILED");
-                transaction.setErrorMessage("Pago fallido: " + intent.getLastPaymentError().getMessage());
-                repository.save(transaction);
+                transaction.setErrorMessage("Pago fallido: " + intent.getLastPaymentError().getMessage()); 
+                repository.save(transaction); // Actualiza DB
 
-                logger.warn("Pago fallido registrado para el orderID: " + transaction.getId());
+                Long orderId = transaction.getOrderId();
+                String status = "FAILED";
+                kafkaTemplate.send(KafkaTopigConfig.PAYMENT_EVENTS_TOPIC, orderId, status); 
+
+                logger.warn("Pago fallido registrado para el Order ID: {}", orderId);
             });
+            
+        } else {
+            logger.debug("Evento de Stripe recibido pero no manejado: {}", eventType);
         }
     }
 }

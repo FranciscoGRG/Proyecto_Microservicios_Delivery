@@ -11,9 +11,6 @@ import com.plataforma_deliveri.order_service.dtos.OrderRequestDto;
 import com.plataforma_deliveri.order_service.dtos.OrderResponseDto;
 import com.plataforma_deliveri.order_service.dtos.OrderStatusUpdateDto;
 import com.plataforma_deliveri.order_service.services.OrderService;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -49,8 +46,8 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody OrderStatusUpdateDto request) {
-        OrderResponseDto updatedOrder = service.updateOrder(id, request);
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long id, @RequestBody String newStatus) {
+        OrderResponseDto updatedOrder = service.updateOrderStatus(id, newStatus);
         return ResponseEntity.ok(updatedOrder);
     }
 
