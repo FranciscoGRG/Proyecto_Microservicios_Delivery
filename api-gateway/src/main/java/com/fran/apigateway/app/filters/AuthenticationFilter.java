@@ -11,19 +11,20 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpMethod; // Importado para HttpMethod
 
 import reactor.core.publisher.Mono;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
-    // ✅ Rutas públicas que no requieren token
+    // ✅ Rutas públicas que se excluyen por inicio de ruta (incluye métodos no-GET)
     private static final List<String> OPEN_API_ENDPOINTS = List.of(
             "/api/v1/users/register",
             "/api/v1/users/login",
-            "/api/v1/payments/**",
-            "/actuator/**",
-            "/eureka/**" 
+            "/api/v1/payments/", // Asegúrate de que termina en / o no para que coincida exactamente
+            "/actuator/",
+            "/eureka/"
     );
 
     private final WebClient.Builder webClientBuilder;
@@ -32,17 +33,34 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         super(Config.class);
         this.webClientBuilder = webClientBuilder;
     }
+    
+    // Nueva función para manejar la excepción del GET de Productos
+    private boolean isProductPublicGet(ServerWebExchange exchange) {
+        String path = exchange.getRequest().getURI().getPath();
+        HttpMethod method = exchange.getRequest().getMethod();
+
+        // Si es GET y la ruta empieza por /api/v1/products
+        return method == HttpMethod.GET && path.startsWith("/api/v1/products");
+    }
 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             String requestPath = exchange.getRequest().getURI().getPath();
 
-            // ✅ Permitir sin token si la ruta empieza por alguna ruta pública
+            // 1. Verificar Rutas Públicas Incondicionales (login, register, payments, etc.)
+            // Usa una coincidencia más precisa para evitar que /payments/ se solape si lo tienes
             if (OPEN_API_ENDPOINTS.stream().anyMatch(requestPath::startsWith)) {
                 return chain.filter(exchange);
             }
+            
+            // 2. Verificar Rutas Públicas Condicionales (GET de Productos)
+            if (isProductPublicGet(exchange)) {
+                return chain.filter(exchange); // <-- Permitir la petición GET sin token
+            }
 
+            // A partir de aquí, todas las peticiones requieren token (incluyendo POST/PUT/DELETE de productos)
+            
             // 🔒 Verificar presencia del header Authorization
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return this.onError(exchange, "Authorization header is missing", HttpStatus.UNAUTHORIZED);
