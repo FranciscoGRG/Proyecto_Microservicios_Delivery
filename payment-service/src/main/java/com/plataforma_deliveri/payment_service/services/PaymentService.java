@@ -21,7 +21,6 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
-import com.stripe.param.PaymentIntentCreateParams;
 
 @Service
 public class PaymentService {
@@ -32,59 +31,76 @@ public class PaymentService {
     @Autowired
     private KafkaTemplate<Long, String> kafkaTemplate;
 
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
+
     public PaymentService(@Value("${stripe.api.secretKey}") String stripeSecretKey) {
         Stripe.apiKey = stripeSecretKey;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
+@Transactional
+public PaymentResponseDto processPayment(PaymentRequestDto request) {
+    try {
+        Long amountInCents = Math.round(request.amount() * 100);
 
-    @Transactional
-    public PaymentResponseDto processPayment(PaymentRequestDto request) {
-        try {
-            Long amountInCents = Math.round(request.amount() * 100);
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("order_id", request.orderId().toString());
 
-            Map<String, String> metadata = new HashMap<>();
-            metadata.put("order_id", request.orderId().toString());
+        // 💳 Datos del token de la tarjeta
+        Map<String, Object> cardData = new HashMap<>();
+        cardData.put("token", request.paymentMethodToken());
 
-            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setAmount(amountInCents)
-                    .setCurrency(request.currency())
-                    .putAllMetadata(metadata)
-                    .setCaptureMethod(PaymentIntentCreateParams.CaptureMethod.AUTOMATIC)
-                    .build();
+        Map<String, Object> paymentMethodData = new HashMap<>();
+        paymentMethodData.put("type", "card");
+        paymentMethodData.put("card", cardData);
 
-            PaymentIntent intent = PaymentIntent.create(params);
+        // 🚫 Desactivamos redirecciones automáticas
+        Map<String, Object> automaticPaymentMethods = new HashMap<>();
+        automaticPaymentMethods.put("enabled", true);
+        automaticPaymentMethods.put("allow_redirects", "never");
 
-            PaymentTransaction transaction = new PaymentTransaction();
-            transaction.setOrderId(request.orderId());
-            transaction.setAmount(request.amount());
-            transaction.setCurrency(request.currency());
-            transaction.setStripePaymentId(intent.getId());
-            transaction.setStatus(intent.getStatus());
+        // 🔧 Parámetros del PaymentIntent
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", amountInCents);
+        params.put("currency", request.currency());
+        params.put("confirm", true);
+        params.put("capture_method", "automatic");
+        params.put("metadata", metadata);
+        params.put("payment_method_data", paymentMethodData);
+        params.put("automatic_payment_methods", automaticPaymentMethods); // ✅ agregado
 
-            PaymentTransaction savedTransaction = repository.save(transaction);
+        PaymentIntent intent = PaymentIntent.create(params);
 
-            return new PaymentResponseDto(
-                    savedTransaction.getStripePaymentId(),
-                    savedTransaction.getOrderId(),
-                    savedTransaction.getStatus().toUpperCase(),
-                    "Payment Intent creado correctamente y con ID de stripe: " + intent.getId());
-        } catch (StripeException e) {
-            PaymentTransaction failedTransaction = new PaymentTransaction();
-            failedTransaction.setOrderId(request.orderId());
-            failedTransaction.setAmount(request.amount());
-            failedTransaction.setCurrency(request.currency());
-            failedTransaction.setStatus("FAILED");
-            failedTransaction.setErrorMessage(e.getMessage());
-            repository.save(failedTransaction);
+        // Guardamos la transacción
+        PaymentTransaction transaction = new PaymentTransaction();
+        transaction.setOrderId(request.orderId());
+        transaction.setAmount(request.amount());
+        transaction.setCurrency(request.currency());
+        transaction.setStripePaymentId(intent.getId());
+        transaction.setStatus(intent.getStatus());
 
-            return new PaymentResponseDto(
-                    null,
-                    request.orderId(),
-                    "FAILED",
-                    "Error al crear el intent: " + e.getMessage());
-        }
+        PaymentTransaction savedTransaction = repository.save(transaction);
+
+        return new PaymentResponseDto(
+                savedTransaction.getStripePaymentId(),
+                savedTransaction.getOrderId(),
+                savedTransaction.getStatus().toUpperCase(),
+                "Payment Intent creado y confirmado correctamente con ID: " + intent.getId());
+    } catch (StripeException e) {
+        PaymentTransaction failedTransaction = new PaymentTransaction();
+        failedTransaction.setOrderId(request.orderId());
+        failedTransaction.setAmount(request.amount());
+        failedTransaction.setCurrency(request.currency());
+        failedTransaction.setStatus("FAILED");
+        failedTransaction.setErrorMessage(e.getMessage());
+        repository.save(failedTransaction);
+
+        return new PaymentResponseDto(
+                null,
+                request.orderId(),
+                "FAILED",
+                "Error al crear el intent: " + e.getMessage());
     }
+}
 
     @Transactional
     public void handleWebhookEvent(String eventType, StripeObject dataObject) {
@@ -129,9 +145,7 @@ public class PaymentService {
 
             repository.findByStripePaymentId(stripeId).ifPresent(transaction -> {
                 transaction.setStatus(status);
-
                 transaction.setErrorMessage("Pago fallido: " + errorMessage);
-
                 repository.save(transaction);
 
                 Long orderId = transaction.getOrderId();

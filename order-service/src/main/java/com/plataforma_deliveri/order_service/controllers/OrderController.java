@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.plataforma_deliveri.order_service.dtos.OrderRequestDto;
 import com.plataforma_deliveri.order_service.dtos.OrderResponseDto;
-import com.plataforma_deliveri.order_service.dtos.OrderStatusUpdateDto;
 import com.plataforma_deliveri.order_service.services.OrderService;
 
 
