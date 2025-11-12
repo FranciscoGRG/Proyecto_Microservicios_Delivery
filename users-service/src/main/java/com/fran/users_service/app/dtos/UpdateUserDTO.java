@@ -6,6 +6,17 @@ public class UpdateUserDTO {
     private String currentPassword;
     private String newPassword;
 
+    
+
+    public UpdateUserDTO(String name, String currentPassword, String newPassword) {
+        this.name = name;
+        this.currentPassword = currentPassword;
+        this.newPassword = newPassword;
+    }
+
+    public UpdateUserDTO() {
+    }
+
     public String getName() {
         return name;
     }
