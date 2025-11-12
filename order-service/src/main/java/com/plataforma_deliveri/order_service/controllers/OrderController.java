@@ -28,7 +28,6 @@ public class OrderController {
     public ResponseEntity<OrderResponseDto> createOrder(
             @RequestBody OrderRequestDto request,
             @RequestHeader("X-User-Email") String userEmail) {
-        // String userEmail = "fgrcalifa@gmail.com";
         OrderResponseDto newOrder = service.createOrder(request, userEmail);
         return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
     }
